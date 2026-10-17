@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flash Card AR Prasekolah — Prototaip</title>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/dist/mindar-image.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.5.4/dist/aframe-extras.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:#fff8e8; color:#243047; }
+    header { padding:16px; text-align:center; background:#ffe08a; }
+    h1 { margin:0; font-size:1.35rem; }
+    p { line-height:1.45; }
+    .wrap { max-width:760px; margin:auto; padding:16px; }
+    .panel { background:white; border-radius:18px; padding:16px; margin:12px 0; box-shadow:0 4px 18px #0000000d; }
+    .btn { display:inline-block; border:0; border-radius:12px; padding:12px 16px; font-size:1rem; font-weight:700; background:#287a63; color:white; text-decoration:none; cursor:pointer; }
+    .btn.secondary { background:#43516a; }
+    .notice { font-size:.92rem; color:#46536a; }
+    #arArea { display:none; height:65vh; min-height:400px; overflow:hidden; background:#111; border-radius:18px; position:relative; }
+    #arArea a-scene { width:100%; height:100%; }
+    .top-note { position:absolute; z-index:10; left:12px; right:12px; top:12px; color:white; text-align:center; background:#0009; border-radius:12px; padding:10px; pointer-events:none; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .print-card { width:min(100%,420px); border:3px solid #27334a; border-radius:20px; margin:12px auto; padding:20px; text-align:center; background:#fff; }
+    .print-card .animal { font-size:5rem; }
+    .print-card .label { font-size:2rem; font-weight:900; letter-spacing:.08em; }
+    .print-card .mark { display:inline-block; padding:8px 14px; margin-top:10px; border:2px dashed #27334a; border-radius:8px; font-weight:800; }
+    @media print {
+      header, .intro, .actions, .notice, #arArea, .instructions { display:none !important; }
+      body { background:white; }
+      .wrap { padding:0; }
+      .panel { box-shadow:none; padding:0; }
+      .print-card { width:100%; max-width:none; border:3px solid black; border-radius:0; margin:0; min-height:240mm; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>🌟 Flash Card AR Prasekolah</h1><div>Prototaip percubaan — Kad contoh</div></header>
+  <main class="wrap">
+    <section class="panel intro">
+      <h2>Jom hidupkan kad!</h2>
+      <p>Prototaip ini menggunakan kamera untuk mengesan imej sasaran dan memaparkan model 3D beranimasi. Untuk ujian pertama, ia menggunakan kad contoh daripada demo MindAR.</p>
+      <div class="actions">
+        <button class="btn" id="startBtn">Buka pengimbas AR</button>
+        <button class="btn secondary" onclick="window.print()">Cetak kad contoh</button>
+      </div>
+      <p class="notice">Nota: butang cetak di bawah mencetak kad panduan visual sahaja. Pengimbas demo menggunakan imej sasaran rasmi MindAR yang dipautkan di bawah. Cetak imej sasaran sebenar daripada pautan itu untuk ujian pengesanan.</p>
+    </section>
+
+    <section id="arArea">
+      <div class="top-note">Halakan kamera pada kad sasaran MindAR. Benarkan akses kamera jika diminta.</div>
+      <a-scene
+        mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind; autoStart: true; uiScanning: yes; maxTrack: 1"
+        color-space="sRGB"
+        renderer="colorManagement: true, physicallyCorrectLights"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+        embedded>
+        <a-assets>
+          <a-asset-item id="model" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
+        </a-assets>
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-entity mindar-image-target="targetIndex: 0">
+          <a-gltf-model
+            src="#model"
+            position="0 0 0.1"
+            rotation="0 0 0"
+            scale="0.45 0.45 0.45"
+            animation-mixer>
+          </a-gltf-model>
+          <a-ring position="0 0 0.02" rotation="0 0 0" radius-inner="0.48" radius-outer="0.52" color="#FFD54A"
+            animation="property: rotation; to: 0 0 360; loop: true; dur: 5000; easing: linear"></a-ring>
+        </a-entity>
+      </a-scene>
+    </section>
+
+    <section class="panel instructions">
+      <h2>Kad contoh untuk cetakan</h2>
+      <div class="print-card">
+        <div class="animal">🦁</div>
+        <div class="label">SINGA</div>
+        <p>Singa ialah haiwan. Lihat, sebut dan belajar!</p>
+        <div class="mark">KAD PANDUAN SAHAJA</div>
+      </div>
+      <p><strong>Imej sasaran yang betul untuk demo:</strong><br>
+        <a href="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" target="_blank" rel="noopener">Buka imej sasaran rasmi MindAR</a>
+      </p>
+      <p class="notice">Simpan imej sasaran rasmi itu dan cetak pada kertas. Kad panduan bergambar singa di atas belum dipadankan sebagai penanda AR tersuai.</p>
+      <h3>Jika kamera tidak dibuka</h3>
+      <ol>
+        <li>Pastikan laman ini dibuka melalui HTTPS, bukan fail HTML terus dari telefon.</li>
+        <li>Benarkan akses kamera dalam tetapan Safari.</li>
+        <li>Pastikan internet aktif kerana model dan pustaka dimuatkan dari CDN.</li>
+        <li>Cuba cahaya terang dan pegang kad rata dalam kamera.</li>
+      </ol>
+    </section>
+  </main>
+  <script>
+    const btn = document.getElementById('startBtn');
+    const area = document.getElementById('arArea');
+    btn.addEventListener('click', async () => {
+      area.style.display = 'block';
+      btn.textContent = 'Pengimbas dibuka — halakan pada kad';
+      area.scrollIntoView({behavior:'smooth', block:'start'});
+      const scene = area.querySelector('a-scene');
+      if (scene && scene.systems && scene.systems['mindar-image-system']) {
+        try { await scene.systems['mindar-image-system'].start(); } catch(e) { console.log(e); }
+      }
+    });
+  </script>
+</body>
+</html>
